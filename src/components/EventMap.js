@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { app } from '../firebase';
 import { getDatabase, ref, onValue} from "firebase/database";
+import { useHistory } from 'react-router-dom';
 
 export const EventMap = () => {
   // console.log(app);
@@ -21,6 +22,9 @@ export const EventMap = () => {
     onlyOnce : true
   });
 
+
+  const history = useHistory();
+  console.log(history);
   const styleMap = {position : 'absolute',width:'90vw',height:'80vh',left:'5vw',top:'10vh'};
     const [locationSet, setlocationSet] = useState(false);
     const [userLocation, setuserLocation] = useState([26.7742,74.9646]);
@@ -42,6 +46,12 @@ export const EventMap = () => {
             console.log(err);
           }
         });
+
+        Radar.geocode({query:"Vivekananda Lecture theater complex",country:"IN"},function(err,result){
+          if(!err)
+          console.log(result);
+        })
+
       }, [])
 
       useEffect(() => {
@@ -73,7 +83,7 @@ export const EventMap = () => {
             <Container>
               <Row>
                 <Col md={4}></Col>
-                <Col md={4} xs={18}><Button>Add an event on map</Button></Col>
+                <Col md={4} xs={18}><Button onClick={function(){history.push('/createEvent')}}>Add an event on map</Button></Col>
                 <Col md={4}></Col>
               </Row>
             </Container>
@@ -82,3 +92,6 @@ export const EventMap = () => {
           </>
         );
 }
+
+
+//http://dev.virtualearth.net/REST/v1/Locations?q=jaipur+railway+station%2C+india&o=json&inclnb=1&key=AixTKAvEgAki5Zwsi0SV1breMlpZHUynV3HKZJEHyBjvtoymETk1rxtTw6DvBYUH&maxResults=10

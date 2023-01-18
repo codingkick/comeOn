@@ -17,17 +17,17 @@ export const EventMap = () => {
   const eventRef = ref(db,'events/');
   onValue(eventRef,(snapshot)=>{
     const data = snapshot.val();
-    console.log(data);
+    // console.log(data);
   },{
     onlyOnce : true
   });
 
 
   const history = useHistory();
-  console.log(history);
+  // console.log(history);
   const styleMap = {position : 'absolute',width:'90vw',height:'80vh',left:'5vw',top:'10vh'};
     const [locationSet, setlocationSet] = useState(false);
-    const [userLocation, setuserLocation] = useState([26.7742,74.9646]);
+    const [userLocation, setuserLocation] = useState([0,0]);
     // const infoboxesWithPushPins = [{location : userLocation,addHandler : "mouseover",
     // "infoboxOption": { title: 'Infobox Title', description: 'Infobox' },
     // "pushPinOption":{ title: 'Pushpin Title', description: 'Pushpin' },
@@ -35,36 +35,28 @@ export const EventMap = () => {
     // }]
     const [infoboxesWithPushPins, setinfoboxesWithPushPins] = useState([])
     useEffect(() => {
-        Radar.initialize("prj_live_pk_ae938e2752f6e2305f036288d899e76fab8ef7d0");
-        Radar.trackOnce(function(err, result) {
-          if (!err) {
-            // do something with result.location, result.events, result.user
-            setuserLocation([result.location.latitude,result.location.longitude]);
-          }
-          else
-          {
-            console.log(err);
-          }
-        });
-
-        Radar.geocode({query:"Vivekananda Lecture theater complex",country:"IN"},function(err,result){
-          if(!err)
-          console.log(result);
-        })
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords;
+        console.log(position.coords);
+        setuserLocation([latitude,longitude]);
+      });
 
       }, [])
 
       useEffect(() => {
-        // console.log("hey")
-        setinfoboxesWithPushPins(state=>[...state,
-          {location : userLocation,addHandler : "mouseover",
-          "infoboxOption": { title: 'Your Location', description: 'Infobox' },
-          "pushPinOption":{ title: 'You', description: 'Pin' },
-          "infoboxAddHandler" : {"type" : "click",callback : function(){console.log("more details")}}
-          }
-        ]);
-        setlocationSet(true);
-      }, [])
+        if(userLocation[0]!==0 && userLocation[1]!==0){
+          console.log(userLocation)
+          setinfoboxesWithPushPins(state=>[...state,
+            {location : userLocation,addHandler : "mouseover",
+            "infoboxOption": { title: 'Your Location', description: 'Infobox' },
+            "pushPinOption":{ title: 'You', description: 'Pin' },
+            "infoboxAddHandler" : {"type" : "click",callback : function(){console.log("more details")}}
+            }
+          ]);
+          setlocationSet(true);
+        }
+        
+      }, [userLocation])
       
 
       return (<>
@@ -76,7 +68,7 @@ export const EventMap = () => {
               bingmapKey = "AixTKAvEgAki5Zwsi0SV1breMlpZHUynV3HKZJEHyBjvtoymETk1rxtTw6DvBYUH"
               center = {userLocation}
               zoom = {14}
-              mapTypeId = {"road"}
+              mapTypeId = {"aerial"}
               > 
             </ReactBingmaps>
             <br/>

@@ -18,6 +18,8 @@ export const CreateEvent = () => {
     const { latitude, longitude } = position.coords;
     // Show a map centered at latitude / longitude.
     console.log(latitude,longitude);
+    setlat(latitude);
+    setlng(longitude);
   });
 
 
@@ -59,6 +61,8 @@ export const CreateEvent = () => {
     
     function shiftMarker(location){
       setdone("false");
+      setlat(location.latitude);
+      setlng(location.longitude);
       setuserLocation([location.latitude,location.longitude]);
     }
 

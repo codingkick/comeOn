@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
+import { RecommendedAddress } from './RecommendedAddress';
 
 export const EventForm = ({latitude,longitude,latFunc,lngFunc,loadMap}) => {
 
@@ -7,7 +8,9 @@ export const EventForm = ({latitude,longitude,latFunc,lngFunc,loadMap}) => {
     const [eventDescription, seteventDescription] = useState("");
     const [startTime, setstartTime] = useState("");
     const [endTime, setendTime] = useState("");
-
+    const [completeAddress, setcompleteAddress] = useState("");
+    const [recommendedAddress, setrecommendedAddress] = useState([]);
+    // console.log(recommendedAddress.length,recommendedAddress);
 
 
     function changeEventName(e){
@@ -18,7 +21,41 @@ export const EventForm = ({latitude,longitude,latFunc,lngFunc,loadMap}) => {
         seteventDescription(e.target.value);
     }
 
+    function changeCompleteAddress(e){
+      setcompleteAddress(e.target.value);
+    }
 
+    useEffect(()=>{
+
+
+      const fetchLocation = async ()=>{
+        try{
+          if(completeAddress !== '')
+          {
+            const s = 'http://dev.virtualearth.net/REST/v1/Locations?q='+completeAddress+'&o=json&inclnb=1&key=AixTKAvEgAki5Zwsi0SV1breMlpZHUynV3HKZJEHyBjvtoymETk1rxtTw6DvBYUH&maxResults=10'
+            const response = await fetch(s);
+            const data = await response.json();
+            // console.log(data.resourceSets);
+            if(data.resourceSets.length !== 0)
+            {
+              var tmp = []
+              for(var i=0;i<data.resourceSets[0].resources.length;i++)
+              {
+                // console.log(data.resourceSets[i]);
+                tmp.push(data.resourceSets[0].resources[i])
+              }
+              setrecommendedAddress(tmp);
+            }
+          }
+        }
+        catch(err){
+          // console.log(err);
+        }
+      }
+      (async ()=>await fetchLocation())();
+
+    },[completeAddress])
+    
     
   return (
     <div>
@@ -30,7 +67,12 @@ export const EventForm = ({latitude,longitude,latFunc,lngFunc,loadMap}) => {
                 <input type="text" value={eventDescription} onChange={(e)=>changeEventDescription(e)}/>
               </label>
               <label>Search location:
-
+                <input type="text" value={completeAddress} onChange={(e)=>changeCompleteAddress(e)}/>
+                {
+                    recommendedAddress.map(function(item,ind){
+                      return(<RecommendedAddress key={ind} recommended={item}></RecommendedAddress>)
+                    })
+                }
               </label>
               <label>Latitude :
                 <input type="text" value={latitude} onChange={(e)=>latFunc(e)}/>

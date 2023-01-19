@@ -67,8 +67,18 @@ export const EventMap = () => {
               infoboxesWithPushPins = {infoboxesWithPushPins}
               bingmapKey = "AixTKAvEgAki5Zwsi0SV1breMlpZHUynV3HKZJEHyBjvtoymETk1rxtTw6DvBYUH"
               center = {userLocation}
-              zoom = {14}
+              zoom = {18}
               mapTypeId = {"aerial"}
+              regularPolygons = {
+                [
+                  {
+                    "center":userLocation,
+                    "radius":0.1,
+                    "points":30,
+                    "option": {fillColor: 'rgba(161,224,255,0.4)', strokeThickness: 0}
+                  }
+                ]
+              }
               > 
             </ReactBingmaps>
             <br/>

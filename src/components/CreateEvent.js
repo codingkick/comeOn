@@ -12,15 +12,7 @@ export const CreateEvent = () => {
   const [done, setdone] = useState("false");
   const [lat, setlat] = useState(0);
   const [lng, setlng] = useState(0);
-  const styleMap = {height:'70vh'}
-  
-  navigator.geolocation.getCurrentPosition(position => {
-    const { latitude, longitude } = position.coords;
-    // Show a map centered at latitude / longitude.
-    console.log(latitude,longitude);
-    setlat(latitude);
-    setlng(longitude);
-  });
+  const styleMap = {height:'70vh'};
 
 
   useEffect(() => {
@@ -28,6 +20,8 @@ export const CreateEvent = () => {
       const { latitude, longitude } = position.coords;
       console.log(position.coords);
       setuserLocation([latitude,longitude]);
+      setlat(latitude);
+      setlng(longitude);
     });
 
     }, [])
@@ -54,6 +48,12 @@ export const CreateEvent = () => {
       setlng(event.target.value);
     }
   
+    const latChange2 = (val)=>{
+      setlat(val);
+    }
+    const lngChange2 = (val)=>{
+      setlng(val);
+    }
     const loadMapAgain = (event)=>{
       setdone("false");
       setuserLocation([parseFloat(lat),parseFloat(lng)]);
@@ -89,7 +89,7 @@ export const CreateEvent = () => {
           </Col>
 
           <Col xs = {18} md={4}>
-            <EventForm latitude={lat} longitude={lng} latFunc={latChange} lngFunc={lngChange} loadMap={loadMapAgain}></EventForm>
+            <EventForm latitude={lat} longitude={lng} latFunc={latChange} lngFunc={lngChange} loadMap={loadMapAgain} latFunc2={latChange2} lngFunc2={lngChange2}></EventForm>
           </Col>
         </Row>
       </Container>

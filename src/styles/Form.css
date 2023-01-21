@@ -1,0 +1,47 @@
+*{
+    box-sizing: border-box;
+  }
+
+  .table input {
+    width: 90%;
+  }
+ .table {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+  
+  .eventName {
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+ .eventName input[type=text], select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+
+
+  input[type=submit] {
+    width: 100%;
+    background-color: #72d757;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    /* float: right; */
+    height: 50px;
+    width: 90%;
+  }
+  
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  
+  .table Button {
+    height: 50px;
+    width: 90%;
+  }
+  

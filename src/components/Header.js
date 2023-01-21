@@ -18,15 +18,6 @@ export const Header = () => {
                 <Nav.Link href="#" >Profile</Nav.Link>
                 <Nav.Link href="#" >Signout</Nav.Link>
             </Nav>
-            <Form className="d-flex">
-                <FormControl
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-                />
-                <Button variant="outline-success">Search</Button>
-            </Form>
             </Navbar.Collapse>
         </Container>
         </Navbar>

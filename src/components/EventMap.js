@@ -7,20 +7,32 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { app } from '../firebase';
+import { app,db } from '../firebase';
 import { getDatabase, ref, onValue} from "firebase/database";
 import { useHistory } from 'react-router-dom';
 
 export const EventMap = () => {
   // console.log(app);
-  const db = getDatabase();
-  const eventRef = ref(db,'events/');
-  onValue(eventRef,(snapshot)=>{
-    const data = snapshot.val();
-    // console.log(data);
-  },{
-    onlyOnce : true
-  });
+  useEffect(()=>{
+    const eventRef = ref(db,'events/');
+    onValue(eventRef,(snapshot)=>{
+      const data = snapshot.val();
+      // console.log(data);
+      Object.entries(data).map(function(val,ind){
+        // console.log(val[1]);
+        setinfoboxesWithPushPins(state=>[...state,
+          {location : [val[1].latitude,val[1].longitude],addHandler : "mouseover",
+          "infoboxOption": { title: 'event loc', description: 'Infobox' },
+          "pushPinOption":{ title: 'event', description: 'Pin' },
+          "infoboxAddHandler" : {"type" : "click",callback : function(){console.log("more details")}}
+          }
+        ]);
+      })
+    },{
+      onlyOnce : true
+    });
+
+  },[])
 
 
   const history = useHistory();

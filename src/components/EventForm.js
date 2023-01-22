@@ -37,8 +37,8 @@ export const EventForm = ({
       userEmail: user.email,
       eventName: eventName,
       eventDescription: eventDescription,
-      latitude: latitude,
-      longitude: longitude,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
       startTime: startTime,
       endTime: endTime,
     });

@@ -1,5 +1,5 @@
 import React from 'react'
-import Radar from 'radar-sdk-js';
+import Radar, { async } from 'radar-sdk-js';
 import { ReactBingmaps } from 'react-bingmaps';
 import { useState,useEffect } from 'react';
 import { Header } from './Header';
@@ -13,27 +13,44 @@ import { useHistory } from 'react-router-dom';
 
 export const EventMap = () => {
   // console.log(app);
+
+  const [city,setcity] = useState("Jaipur");
   useEffect(()=>{
     const eventRef = ref(db,'events/');
     onValue(eventRef,(snapshot)=>{
       const data = snapshot.val();
       // console.log(data);
       Object.entries(data).map(function(val,ind){
-        // console.log(val[1]);
-        setinfoboxesWithPushPins(state=>[...state,
-          {location : [val[1].latitude,val[1].longitude],addHandler : "mouseover",
-          "infoboxOption": { title: 'event loc', description: 'Infobox' },
-          "pushPinOption":{ title: 'event', description: 'Pin' },
-          "infoboxAddHandler" : {"type" : "click",callback : function(){console.log("more details")}}
+        console.log(val[1]);
+        const func2 = async()=>{
+          try{
+            const t = "http://dev.virtualearth.net/REST/v1/Locations/"+ val[1].latitude+","+val[1].longitude +"?o=json&key=AixTKAvEgAki5Zwsi0SV1breMlpZHUynV3HKZJEHyBjvtoymETk1rxtTw6DvBYUH";
+            const res = await fetch(t);
+            const d = await res.json();
+            if(d.resourceSets[0].resources[0].address.adminDistrict2 === city)
+            {
+              setinfoboxesWithPushPins(state=>[...state,
+                  {location : [val[1].latitude,val[1].longitude],addHandler : "mouseover",
+                  "infoboxOption": { title: 'event loc', description: 'Infobox' },
+                  "pushPinOption":{ title: 'event', description: 'Pin' },
+                  "infoboxAddHandler" : {"type" : "click",callback : function(){console.log("more details")}}
+                  }
+                ]);
+            }
           }
-        ]);
+          catch(err){
+            console.log(err);
+          }
+        }
+
+        (async ()=>await func2())();
+        
       })
     },{
       onlyOnce : true
     });
 
-  },[])
-
+  },[city])
 
   const history = useHistory();
   // console.log(history);
@@ -70,6 +87,29 @@ export const EventMap = () => {
         
       }, [userLocation])
       
+      
+      // console.log("city : ",city);
+
+      useEffect(()=>{
+        // console.log(userLocation);
+        const func = async()=>{
+          try{
+            const s = "http://dev.virtualearth.net/REST/v1/Locations/"+ userLocation[0]+","+userLocation[1] +"?o=json&key=AixTKAvEgAki5Zwsi0SV1breMlpZHUynV3HKZJEHyBjvtoymETk1rxtTw6DvBYUH";
+            const response = await fetch(s);
+            const data = await response.json();
+            // console.log(data);
+            setcity(data.resourceSets[0].resources[0].address.adminDistrict2);
+          }
+          catch(err)
+          {
+            console.log(err);
+          }
+        }
+        if(userLocation[0] !== 0 || userLocation[1] !== 0)
+        {
+          (async ()=>await func())();
+        }
+      },[userLocation])
 
       return (<>
         {console.log(infoboxesWithPushPins)}
@@ -85,7 +125,7 @@ export const EventMap = () => {
                 [
                   {
                     "center":userLocation,
-                    "radius":0.1,
+                    "radius":10,
                     "points":30,
                     "option": {fillColor: 'rgba(161,224,255,0.4)', strokeThickness: 0}
                   }
